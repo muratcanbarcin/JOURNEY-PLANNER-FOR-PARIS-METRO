@@ -1,121 +1,133 @@
 package GraphPackage;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import ADTPackage.*;
 
-class Vertex<T> implements VertexInterface<T> {
-    private T label;
-    private ArrayList<Edge> edgeList;
+public class Vertex {
+    private String name;
+    private ArrayList<Edge> edges;
+    private Vertex parent;
     private boolean visited;
-    private VertexInterface<T> previousVertex;
     private double cost;
 
-    public Vertex(T vertexLabel) {
-        this.label = vertexLabel;
-        this.edgeList = new ArrayList<>();
+    public Vertex(String name) {
+        this.name = name;
+        edges = new ArrayList<Edge>();
+        parent = null;
+        visited = false;
+    }
+
+    public void addEdge(Edge e) {
+        edges.add(e);
+    }
+
+    public ArrayList<Edge> getEdges() {
+        return this.edges;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Vertex getParent() {
+        return parent;
+    }
+
+    public void setParent(Vertex parent) {
+        this.parent = parent;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
+    }
+
+    public void visit() {
+        this.visited = true;
+    }
+
+    public void unvisit() {
         this.visited = false;
-        this.previousVertex = null;
-        this.cost = 0;
-    }
-    @Override
-    public T getLabel() {
-        return label;
     }
 
-    @Override
-    public void visit() {visited=true;}
-
-    @Override
-    public void unvisit() {visited=false;}
-
-    @Override
     public boolean isVisited() {
-        return visited;
+        return this.visited;
     }
 
-    public Iterator<VertexInterface<T>> getNeighborIterator() {
-        ArrayList<VertexInterface<T>> neighbors = new ArrayList<>();
-        for (Edge edge : edgeList) {
-            neighbors.add(edge.getEndVertex());
-        }
-        return neighbors.iterator();
-    }
+    public Vertex getUnvisitedNeighbor() {
+        Vertex result = null;
 
-    @Override
-    public Iterator<Double> getWeightIterator() {
-        ArrayList<Double> weights = new ArrayList<>();
-        for (Edge edge : edgeList) {
-            weights.add(edge.getWeight());
-        }
-        return weights.iterator();
-    }
+        Iterator<Vertex> neighbors = getNeighborIterator();
+        while (neighbors.hasNext() && (result == null))
+        {
+            Vertex nextNeighbor = neighbors.next();
+            if (!nextNeighbor.isVisited())
+                result = nextNeighbor;
+        } // end while
 
-    @Override
-    public boolean hasNeighbor() {
-        return !edgeList.isEmpty();
-    }
-    @Override
-    public VertexInterface<T> getUnvisitedNeighbor() {
-        for (Edge edge : edgeList) {
-            if (!edge.getEndVertex().isVisited()) {
-                return edge.getEndVertex();
-            }
-        }
-        return null;
-    }
-    @Override
-    public void setPredecessor(VertexInterface<T> predecessor) {
-        this.previousVertex = predecessor;
-    }
-
-    @Override
-    public VertexInterface<T> getPredecessor() {
-        return previousVertex;
-    }
-
-    @Override
-    public boolean hasPredecessor() {
-        return previousVertex != null;
-    }
-
-    @Override
-    public void setCost(double newCost) {this.cost=cost;}
-
-    @Override
-    public double getCost() {return cost;}
-    @Override
-    public boolean connect(VertexInterface<T> endVertex, double edgeWeight) {
-        boolean result = false;
-        if (!this.equals(endVertex)) {
-            Iterator<VertexInterface<T>> neighbors = getNeighborIterator();
-            boolean duplicateEdge = false;
-            while (!duplicateEdge && neighbors.hasNext()) {
-                VertexInterface<T> nextNeighbor = neighbors.next();
-                if (endVertex.equals(nextNeighbor)) {
-                    duplicateEdge = true;
-                }
-            }
-            if (!duplicateEdge) {
-                edgeList.add(new Edge(endVertex, edgeWeight));
-                result = true;
-            }
-        }
         return result;
     }
-    @Override
-    public boolean connect(VertexInterface<T> endVertex){return  connect(endVertex,0);}
 
-    protected class Edge{
-        private VertexInterface<T> vertex;
-        private double weight;
+    public boolean hasEdge(String neighbor) {
+        boolean found = false;
+        Iterator<Vertex> neighbors = getNeighborIterator();
+        while (neighbors.hasNext())
+        {
+            Vertex nextNeighbor = neighbors.next();
+            if (nextNeighbor.getName().equalsIgnoreCase(neighbor))
+            {
+                found = true;
+                break;
+            }
+        } // end while
 
-        protected  Edge(VertexInterface<T> endVertex, double edgeWeight){
-            vertex = endVertex;
-            weight = edgeWeight;
-        }
-        protected VertexInterface<T> getEndVertex(){return vertex;}
-        protected double getWeight(){return weight;}
+        return found;
     }
 
+    public Iterator<Vertex> getNeighborIterator()
+    {
+        return new NeighborIterator();
+    } // end getNeighborIterator
+
+    private class NeighborIterator implements Iterator<Vertex>
+    {
+        int edgeIndex = 0;
+        private NeighborIterator()
+        {
+            edgeIndex = 0;
+        } // end default constructor
+
+        public boolean hasNext()
+        {
+            return edgeIndex < edges.size();
+        } // end hasNext
+
+        public Vertex next()
+        {
+            Vertex nextNeighbor = null;
+
+            if (hasNext())
+            {
+                nextNeighbor = edges.get(edgeIndex).getDestination();
+                edgeIndex++;
+            }
+            else
+                throw new NoSuchElementException();
+
+            return nextNeighbor;
+        } // end next
+
+        public void remove()
+        {
+            throw new UnsupportedOperationException();
+        } // end remove
+    } // end NeighborIterator
 }

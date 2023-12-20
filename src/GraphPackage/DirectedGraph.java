@@ -1,97 +1,131 @@
 package GraphPackage;
-import java.util.Dictionary;
+
+import java.util.HashMap;
 import java.util.Iterator;
-import ADTPackage.*;
-public class DirectedGraph<T> implements  GraphInterface<T> {
-    private DictionaryInterface<T,VertexInterface<T>> vertices;
-    private int edgeCount;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
 
-    public DirectedGraph(){
-       // vertices = new LinkedDictionary<>();
-        edgeCount =0;
+public class DirectedGraph implements GraphInterface {
+    private HashMap<String, Vertex> vertices;
+
+    public DirectedGraph() {
+        this.vertices = new HashMap<>();
     }
 
+    public void addEdge(String source, String destination, int weight) {
 
-    @Override
-    public boolean addVertex(T vertexLabel) {
-        VertexInterface<T> addOutcome = vertices.add(vertexLabel, new Vertex<>(vertexLabel));
-        return addOutcome==null;
+        Vertex source_v = vertices.get(source);
+        Vertex destination_v = vertices.get(destination);
+
+        if (source_v != null && destination_v != null && source_v.hasEdge(destination)) {
+            System.out.println("This edge has already added!");
+        }
+        else
+        {
+            if (vertices.get(source) == null) {
+                source_v = new Vertex(source);
+                vertices.put(source, source_v);
+            }
+
+            if (vertices.get(destination) == null) {
+                destination_v = new Vertex(destination);
+                vertices.put(destination, destination_v);
+            }
+
+            Edge edge = new Edge(source_v, destination_v, weight);
+            source_v.addEdge(edge);
+        }
     }
 
-    @Override
-    public boolean addEdge(T begin, T end, double edgeWeight) {
-        boolean result = false;
-        VertexInterface<T> beginVertex = vertices.getValue(begin);
-        VertexInterface<T> endVertex = vertices.getValue(end);
+    public void print() {
 
-        if((beginVertex != null)&&(endVertex!=null))
-            result = beginVertex.connect(endVertex,edgeWeight);
-        if(result)
-            edgeCount++;
+        for (Vertex v : vertices.values()) {
+            System.out.print(v.getName() + " -> ");
 
-        return result;
+            Iterator<Vertex> neighbors = v.getNeighborIterator();
+            while (neighbors.hasNext())
+            {
+                Vertex n = neighbors.next();
+                System.out.print(n.getName() + " ");
+            }
+            System.out.println();
+        }
     }
 
-    @Override
-    public boolean hasEdge(T begin, T end) {
-        boolean found = false;
-        VertexInterface<T> beginVertex = vertices.getValue(begin);
-        VertexInterface<T> endVertex = vertices.getValue(end);
+    public Iterable<Vertex> getVertices() {
+        return vertices.values();
+    }
 
-        if((beginVertex!=null)&&(endVertex!=null)){
-            Iterator<VertexInterface<T>> neighbors = beginVertex.getNeighborIterator();
-            while (!found && neighbors.hasNext()){
-                VertexInterface<T> nextNeighbor = neighbors.next();
-                if(endVertex.equals(nextNeighbor))
-                    found = true;
+    public int size() {
+        return vertices.size();
+    }
+
+    private void resetVertices() {
+        for (Vertex v : vertices.values()) {
+            v.unvisit();
+            v.setCost(0);
+            v.setParent(null);
+        }
+    }
+
+    public Queue<String> getBreadthFirstTraversal(String origin)
+    {
+        resetVertices();
+        Queue<String> traversalOrder = new LinkedList<>(); // Queue of vertex labels
+        Queue<Vertex> vertexQueue = new LinkedList<>(); // Queue of Vertex objects
+
+        Vertex originVertex = vertices.get(origin);
+        originVertex.visit();
+
+        traversalOrder.add(origin);    // Enqueue vertex label
+        vertexQueue.add(originVertex); // Enqueue vertex
+
+        while (!vertexQueue.isEmpty())
+        {
+            Vertex frontVertex = vertexQueue.remove();
+            Iterator<Vertex> neighbors = frontVertex.getNeighborIterator();
+
+            while (neighbors.hasNext())
+            {
+                Vertex nextNeighbor = neighbors.next();
+                if (!nextNeighbor.isVisited())
+                {
+                    nextNeighbor.visit();
+                    traversalOrder.add(nextNeighbor.getName());
+                    vertexQueue.add(nextNeighbor);
+                } // end if
+            } // end while
+        } // end while
+
+        return traversalOrder;
+    } // end getBreadthFirstTraversal
+
+    public Queue<String> getDepthFirstTraversal(String origin) {
+        resetVertices();
+        Queue<String> traversalOrder = new LinkedList<>();
+        Stack<Vertex> vertexStack = new Stack<>();
+
+        Vertex originVertex = vertices.get(origin);
+        originVertex.visit();
+        traversalOrder.add(origin);    // Enqueue vertex label
+        vertexStack.push(originVertex); // Push vertex onto the stack
+
+        while (!vertexStack.isEmpty()) {
+            Vertex currentVertex = vertexStack.pop();
+            Iterator<Vertex> neighbors = currentVertex.getNeighborIterator();
+
+            while (neighbors.hasNext()) {
+                Vertex nextNeighbor = neighbors.next();
+                if (!nextNeighbor.isVisited()) {
+                    nextNeighbor.visit();
+                    traversalOrder.add(nextNeighbor.getName());
+                    vertexStack.push(nextNeighbor);
+                }
             }
         }
-        return found;
+
+        return traversalOrder;
     }
 
-    @Override
-    public boolean isEmpty() {
-        return vertices.isEmpty();
-    }
-
-    @Override
-    public int getNumberofVertices() {
-        return vertices.getSize();
-    }
-
-    @Override
-    public int getNumberofEdges() {
-        return edgeCount;
-    }
-
-    @Override
-    public void clear() {
-        vertices.clear();
-        edgeCount =0;
-    }
-
-    @Override
-    public QueueInterface<T> geBreadthFirstTreval(T origin) {//not implemented
-        return null;
-    }
-
-    @Override
-    public QueueInterface<T> getDepthFirstTraversal(T origin) {//not implemented
-        return null;
-    }
-
-    @Override
-    public StackInterface<T> getTopologicalOrder() {//not implemented
-        return null;
-    }
-
-    @Override
-    public int getShortestPath(T begin, T end, StackInterface<T> path) {//not implemented
-        return 0;
-    }
-
-    @Override
-    public double getCheaptestPath(T begin, T end, StackInterface<T> path) {//not implemented
-        return 0;
-    }
 }
