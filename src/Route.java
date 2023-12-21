@@ -3,12 +3,12 @@ import java.util.ArrayList;
 public class Route {
  private int arrivalTime;
  private int directionID;
- private int routeID;
+ private String routeID;
  private String routeName;
  private int routeType;
  private ArrayList<Station> stations;
 
-    public Route(int arrivalTime, int directionID, int routeID, String routeName, int routeType) {
+    public Route(int arrivalTime, int directionID, String routeID, String routeName, int routeType) {
         this.arrivalTime = arrivalTime;
         this.directionID = directionID;
         this.routeID = routeID;
