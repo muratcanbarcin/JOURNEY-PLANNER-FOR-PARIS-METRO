@@ -18,11 +18,7 @@ public class DirectedGraph implements GraphInterface {
         Vertex source_v = vertices.get(source);
         Vertex destination_v = vertices.get(destination);
 
-        if (source_v != null && destination_v != null && source_v.hasEdge(destination)) {
-            System.out.println("This edge has already added!");
-        }
-        else
-        {
+        if (!(source_v != null && destination_v != null && source_v.hasEdge(destination))) {
             if (vertices.get(source) == null) {
                 source_v = new Vertex(source);
                 vertices.put(source, source_v);

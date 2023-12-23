@@ -1,5 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Map;
+
 import GraphPackage.*;
 
 public class JourneyMain {
@@ -64,7 +66,14 @@ public class JourneyMain {
         }
 
        buildGraph();
-       metroGraph.print();
+      // metroGraph.print();
+
+        ShortestPathAlgorithm shortestPathAlgorithm = new ShortestPathAlgorithm(metroGraph);
+        Map<String, Integer> shortestPaths = shortestPathAlgorithm.findShortestPaths("Stalingrad");
+
+        for (Map.Entry<String, Integer> entry : shortestPaths.entrySet()) {
+            System.out.println("En kısa yol (" + entry.getKey() + "): " + entry.getValue());
+        }
     }
     public void buildGraph() {
         for (Route route : routes) {
