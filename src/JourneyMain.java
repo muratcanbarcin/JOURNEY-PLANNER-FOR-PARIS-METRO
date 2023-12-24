@@ -1,6 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.Scanner;
 
 import GraphPackage.*;
 
@@ -68,8 +68,25 @@ public class JourneyMain {
        buildGraph();
       // metroGraph.print();
 
-        ShortestPathAlgorithm shortestPathAlgorithm = new ShortestPathAlgorithm(metroGraph);
-        shortestPathAlgorithm.findShortestPaths("Charles de Gaulle-Etoile","Odéon"); //finds and prints the shortest path
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Origin Station: ");
+        String originStation = scanner.nextLine();
+        System.out.print("Destination: ");
+        String destination = scanner.nextLine();
+        System.out.print("Preferetion : ");
+        String preferetion  = scanner.nextLine();
+        if(preferetion.equalsIgnoreCase("fewer stops")){
+            FewerStopAlgorithm algorithm = new FewerStopAlgorithm(metroGraph);
+            algorithm.findFewerStopsPath(originStation,destination);
+        }
+        else if(preferetion.equalsIgnoreCase("minimum time")){
+            MinimumTimeAlgorithm minimumTimeAlgorithm = new MinimumTimeAlgorithm(metroGraph);
+            minimumTimeAlgorithm.findShortestPaths(originStation,destination); //finds and prints the shortest path
+        }
+
+
+
+
     }
     public void buildGraph() {
         for (Route route : routes) {

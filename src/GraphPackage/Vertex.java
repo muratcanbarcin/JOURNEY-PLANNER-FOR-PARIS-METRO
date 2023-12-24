@@ -61,6 +61,13 @@ public class Vertex {
     public boolean isVisited() {
         return this.visited;
     }
+    public ArrayList<Vertex> getNeighbors() {
+        ArrayList<Vertex> neighbors = new ArrayList<>();
+        for (Edge edge : edges) {
+            neighbors.add(edge.getDestination());
+        }
+        return neighbors;
+    }
 
     public Vertex getUnvisitedNeighbor() {
         Vertex result = null;

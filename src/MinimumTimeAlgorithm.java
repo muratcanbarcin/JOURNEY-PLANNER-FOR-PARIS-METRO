@@ -1,25 +1,23 @@
 import GraphPackage.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-public class ShortestPathAlgorithm {
+public class MinimumTimeAlgorithm {
 
     private DirectedGraph graph;
+    private HashMap<String, Integer> shortestPaths = new HashMap<>();
+    private HashMap<String, Vertex> previousVertices = new HashMap<>();
+    private HashMap<String, String> edgeIds = new HashMap<>(); // Map to store edge IDs in the shortest path
+    private PriorityQueue<VertexDistancePair> minHeap = new PriorityQueue<>();
 
-    public ShortestPathAlgorithm(DirectedGraph graph) {
+    public MinimumTimeAlgorithm(DirectedGraph graph) {
         this.graph = graph;
     }
 
-    public HashMap<String, Integer> findShortestPaths(String startVertex, String stopVertex) {
-        HashMap<String, Integer> shortestPaths = new HashMap<>();
-        HashMap<String, Vertex> previousVertices = new HashMap<>();
-        HashMap<String, String> edgeIds = new HashMap<>(); // Map to store edge IDs in the shortest path
-        PriorityQueue<VertexDistancePair> minHeap = new PriorityQueue<>();
-    
+    public void findShortestPaths(String startVertex, String stopVertex) {
+
         minHeap.add(new VertexDistancePair(getVertex(startVertex), 0));
     
         while (!minHeap.isEmpty()) {
@@ -34,19 +32,17 @@ public class ShortestPathAlgorithm {
                     Vertex neighbor = edge.getDestination();
                     int newDistance = currentPair.getDistance() + edge.getWeight();
     
-                    if (!neighbor.isVisited()) {
-                        if (!shortestPaths.containsKey(neighbor.getName()) || newDistance < shortestPaths.get(neighbor.getName())) {
-                            minHeap.add(new VertexDistancePair(neighbor, newDistance));
-                            previousVertices.put(neighbor.getName(), currentVertex);
-                            edgeIds.put(neighbor.getName(), edge.getID()); // Store the edge ID
-                            shortestPaths.put(neighbor.getName(), newDistance);
-                        }
+                    if (!neighbor.isVisited() && (!shortestPaths.containsKey(neighbor.getName()) || newDistance < shortestPaths.get(neighbor.getName()))) {
+                        minHeap.add(new VertexDistancePair(neighbor, newDistance));
+                        previousVertices.put(neighbor.getName(), currentVertex);
+                        edgeIds.put(neighbor.getName(), edge.getID()); // Store the edge ID
+                        shortestPaths.put(neighbor.getName(), newDistance);
                     }
     
                     if (neighbor.getName().equalsIgnoreCase(stopVertex)) {
                         // Reached the stopVertex, reconstruct and print the path
                         printShortestPath(previousVertices, startVertex, stopVertex, newDistance, edgeIds);
-                        return shortestPaths;
+                        return;
                     }
                 }
             }
@@ -54,7 +50,6 @@ public class ShortestPathAlgorithm {
     
         // No path found to the stopVertex
         System.out.println("No path found from " + startVertex + " to " + stopVertex + "\n");
-        return shortestPaths;
     }
 
     private void printShortestPath(HashMap<String, Vertex> previousVertices, String startVertex, String stopVertex, int weight, Map<String, String> edgeIds) {
@@ -79,11 +74,15 @@ public class ShortestPathAlgorithm {
                 tempEdge = edgeIds.get(currentVertexName);
             }
 
-            currentVertexName = previousVertices.get(currentVertexName) != null ?
-                    previousVertices.get(currentVertexName).getName() : null;
+            if (previousVertices.get(currentVertexName) != null) {
+                currentVertexName = previousVertices.get(currentVertexName).getName();
+            } else {
+                currentVertexName = null;
+            }
+
 
         }
-        System.out.println("\n"+weight/60);
+        System.out.println("\n"+weight/60 +" min");
         System.out.println("");
 
     }
