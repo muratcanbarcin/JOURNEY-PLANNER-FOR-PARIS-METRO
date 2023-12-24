@@ -7,34 +7,34 @@ import java.util.Queue;
 import java.util.Stack;
 
 public class DirectedGraph implements GraphInterface {
-    private HashMap<String, Vertex> vertices;
+    private HashMap<String, Vertex> vertices; //attribute
 
     public DirectedGraph() {
         this.vertices = new HashMap<>();
-    }
+    } //Constructor
 
-    public void addEdge(String source, String destination, int weight, String id) {
+    public void addEdge(String source, String destination, int weight, String id) { //method of addEdge between source and destination
 
-        Vertex source_v = vertices.get(source);
-        Vertex destination_v = vertices.get(destination);
+        Vertex source_v = vertices.get(source); //assign source
+        Vertex destination_v = vertices.get(destination); //assign destination
 
-        if (!(source_v != null && destination_v != null && source_v.hasEdge(destination))) {
-            if (vertices.get(source) == null) {
+        if (!(source_v != null && destination_v != null && source_v.hasEdge(destination))) { //source and destination control
+            if (vertices.get(source) == null) { //if source null put source to vertices
                 source_v = new Vertex(source);
                 vertices.put(source, source_v);
             }
 
-            if (vertices.get(destination) == null) {
+            if (vertices.get(destination) == null) {//if destination null put destination to vertices
                 destination_v = new Vertex(destination);
                 vertices.put(destination, destination_v);
             }
-
+            //create new edge
             Edge edge = new Edge(source_v, destination_v, weight, id);
             source_v.addEdge(edge);
         }
     }
 
-    public void print() {
+    public void print() { //Display method
 
         for (Vertex v : vertices.values()) {
             System.out.print(v.getName() + " -> ");
@@ -55,16 +55,16 @@ public class DirectedGraph implements GraphInterface {
 
     public int size() {
         return vertices.size();
-    }
+    } //size of vertices
 
-    private void resetVertices() {
+    private void resetVertices() {  //reset of all vertices
         for (Vertex v : vertices.values()) {
             v.unvisit();
             v.setCost(0);
             v.setParent(null);
         }
     }
-
+    /*No usage
     public Queue<String> getBreadthFirstTraversal(String origin)
     {
         resetVertices();
@@ -123,5 +123,7 @@ public class DirectedGraph implements GraphInterface {
 
         return traversalOrder;
     }
+
+ */
 
 }

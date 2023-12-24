@@ -1,3 +1,5 @@
+package AlgorithmPackage;
+
 import GraphPackage.*;
 
 import java.util.HashMap;
@@ -16,29 +18,30 @@ public class MinimumTimeAlgorithm {
         this.graph = graph;
     }
 
+    // Method to find the shortest paths using Dijkstra's algorithm
     public void findShortestPaths(String startVertex, String stopVertex) {
 
         minHeap.add(new VertexDistancePair(getVertex(startVertex), 0));
-    
+
         while (!minHeap.isEmpty()) {
             VertexDistancePair currentPair = minHeap.poll();
             Vertex currentVertex = currentPair.getVertex();
-    
+
             if (!currentVertex.isVisited()) {
                 currentVertex.visit();
                 shortestPaths.put(currentVertex.getName(), currentPair.getDistance());
-    
+
                 for (Edge edge : currentVertex.getEdges()) {
                     Vertex neighbor = edge.getDestination();
                     int newDistance = currentPair.getDistance() + edge.getWeight();
-    
+
                     if (!neighbor.isVisited() && (!shortestPaths.containsKey(neighbor.getName()) || newDistance < shortestPaths.get(neighbor.getName()))) {
                         minHeap.add(new VertexDistancePair(neighbor, newDistance));
                         previousVertices.put(neighbor.getName(), currentVertex);
                         edgeIds.put(neighbor.getName(), edge.getID()); // Store the edge ID
                         shortestPaths.put(neighbor.getName(), newDistance);
                     }
-    
+
                     if (neighbor.getName().equalsIgnoreCase(stopVertex)) {
                         // Reached the stopVertex, reconstruct and print the path
                         printShortestPath(previousVertices, startVertex, stopVertex, newDistance, edgeIds);
@@ -47,11 +50,12 @@ public class MinimumTimeAlgorithm {
                 }
             }
         }
-    
+
         // No path found to the stopVertex
         System.out.println("No path found from " + startVertex + " to " + stopVertex + "\n");
     }
 
+    // Method to print the shortest path and details
     private void printShortestPath(HashMap<String, Vertex> previousVertices, String startVertex, String stopVertex, int weight, Map<String, String> edgeIds) {
         System.out.println("Origin Station: " + startVertex + "\nDestination:" + stopVertex + "\nPreferetion: Minimum Time\n\nSuggestion:");
         String currentVertexName = stopVertex;
@@ -86,7 +90,8 @@ public class MinimumTimeAlgorithm {
         System.out.println("");
 
     }
-    
+
+    // Helper method to get a vertex by its name
     private Vertex getVertex(String vertexName) {
         for (Vertex vertex : graph.getVertices()) {
             if (vertex.getName().equalsIgnoreCase(vertexName)) {
@@ -96,6 +101,7 @@ public class MinimumTimeAlgorithm {
         return null;
     }
 
+    // Private class to represent a pair of vertex and its distance
     private class VertexDistancePair implements Comparable<VertexDistancePair> {
         private Vertex vertex;
         private int distance;

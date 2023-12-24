@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class Vertex {
+    //Attributes
     private String name;
     private ArrayList<Edge> edges;
     private Vertex parent;
@@ -20,10 +21,14 @@ public class Vertex {
 
     public void addEdge(Edge e) {
         edges.add(e);
-    }
+    } //add Edge to Vertex
 
+    //getters and setters
     public ArrayList<Edge> getEdges() {
         return this.edges;
+    }
+    public void setEdges(ArrayList<Edge> edges) {
+        this.edges = edges;
     }
 
     public String getName() {
@@ -61,6 +66,7 @@ public class Vertex {
     public boolean isVisited() {
         return this.visited;
     }
+    /* No usage
     public ArrayList<Vertex> getNeighbors() {
         ArrayList<Vertex> neighbors = new ArrayList<>();
         for (Edge edge : edges) {
@@ -83,13 +89,15 @@ public class Vertex {
         return result;
     }
 
-    public boolean hasEdge(String neighbor) {
-        boolean found = false;
+
+     */
+    public boolean hasEdge(String neighbor) { //If between of vertex and neighbor has edge return true, if has not edge return false
+        boolean found = false; //flag
         Iterator<Vertex> neighbors = getNeighborIterator();
-        while (neighbors.hasNext())
+        while (neighbors.hasNext()) //neigbors loop
         {
             Vertex nextNeighbor = neighbors.next();
-            if (nextNeighbor.getName().equalsIgnoreCase(neighbor))
+            if (nextNeighbor.getName().equalsIgnoreCase(neighbor)) //neighbor control
             {
                 found = true;
                 break;
@@ -99,23 +107,23 @@ public class Vertex {
         return found;
     }
 
-    public Iterator<Vertex> getNeighborIterator()
+    public Iterator<Vertex> getNeighborIterator() //Method of finding neighbors of vertex
     {
         return new NeighborIterator();
     } // end getNeighborIterator
 
-    private class NeighborIterator implements Iterator<Vertex>
+    private class NeighborIterator implements Iterator<Vertex> //Class of finding neighbors of vertex
     {
-        int edgeIndex = 0;
-        private NeighborIterator()
+        int edgeIndex = 0; //attribute
+        private NeighborIterator() //constructor
         {
             edgeIndex = 0;
-        } // end default constructor
+        }
 
         public boolean hasNext()
         {
             return edgeIndex < edges.size();
-        } // end hasNext
+        }
 
         public Vertex next()
         {
@@ -135,6 +143,6 @@ public class Vertex {
         public void remove()
         {
             throw new UnsupportedOperationException();
-        } // end remove
-    } // end NeighborIterator
+        }
+    }
 }

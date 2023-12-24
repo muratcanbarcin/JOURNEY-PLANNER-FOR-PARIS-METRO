@@ -2,15 +2,19 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import AlgorithmPackage.FewerStopAlgorithm;
+import AlgorithmPackage.MinimumTimeAlgorithm;
 import GraphPackage.*;
 
 public class JourneyMain {
+    //attributes
     private DirectedGraph metroGraph;
     private ArrayList<Route> routes;
-    public JourneyMain() {
+    public JourneyMain() { //constructor
         this.routes = new ArrayList<>();
         this.metroGraph = new DirectedGraph();
 
+        //variables
         String csvFile = "Paris_RER_Metro.csv";
         String line;
         String cvsSplitBy = ",";
@@ -65,9 +69,9 @@ public class JourneyMain {
             e.printStackTrace();
         }
 
-       buildGraph();
-      // metroGraph.print();
+       buildGraph(); //create a DirectedGraph
 
+        //Simple UI
         Scanner scanner = new Scanner(System.in);
         System.out.print("Origin Station: ");
         String originStation = scanner.nextLine();
@@ -75,6 +79,7 @@ public class JourneyMain {
         String destination = scanner.nextLine();
         System.out.print("Preferetion : ");
         String preferetion  = scanner.nextLine();
+
         if(preferetion.equalsIgnoreCase("fewer stops")){
             FewerStopAlgorithm algorithm = new FewerStopAlgorithm(metroGraph);
             algorithm.findFewerStopsPath(originStation,destination);
@@ -89,14 +94,14 @@ public class JourneyMain {
 
     }
     public void buildGraph() {
-        for (Route route : routes) {
-            for (int i = 0; i < route.getStations().size() - 1; i++) {
-                String sourceStation = route.getStations().get(i).getStopName();
-                String destinationStation = route.getStations().get(i + 1).getStopName();
-                int weight = Math.abs(route.getStations().get(i).getArrivalTime() - route.getStations().get(i+1).getArrivalTime());
-                String route_id = route.getRouteID();
+        for (Route route : routes) { //foreach for routes
+            for (int i = 0; i < route.getStations().size() - 1; i++) { //loop for stations
+                String sourceStation = route.getStations().get(i).getStopName(); //assign source
+                String destinationStation = route.getStations().get(i + 1).getStopName();//assign destination
+                int weight = Math.abs(route.getStations().get(i).getArrivalTime() - route.getStations().get(i+1).getArrivalTime()); //calculate weight of edge
+                String route_id = route.getRouteID();  //assign routeID
 
-                metroGraph.addEdge(sourceStation, destinationStation, weight, route_id);
+                metroGraph.addEdge(sourceStation, destinationStation, weight, route_id); //addEdge to graph
             }
         }
     }
