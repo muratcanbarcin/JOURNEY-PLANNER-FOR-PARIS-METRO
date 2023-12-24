@@ -56,19 +56,36 @@ public class ShortestPathAlgorithm {
         System.out.println("No path found from " + startVertex + " to " + stopVertex + "\n");
         return shortestPaths;
     }
-    
+
     private void printShortestPath(HashMap<String, Vertex> previousVertices, String startVertex, String stopVertex, int weight, Map<String, String> edgeIds) {
-        System.out.println("Shortest path from " + startVertex + " to " + stopVertex + ": " + weight);
+        System.out.println("Origin Station: " + startVertex + "\nDestination:" + stopVertex + "\nPreferetion: Minimum Time\n\nSuggestion:");
         String currentVertexName = stopVertex;
+        System.out.println("Line "+edgeIds.get(currentVertexName)+":");
+        String tempEdge = edgeIds.get(currentVertexName);
+        String startStation = currentVertexName;
+        String endStation = " ";
+        int stationCounter =0;
         while (currentVertexName != null) {
-            System.out.print(currentVertexName);
-            if (!currentVertexName.equals(startVertex)) {
-                System.out.print(" <" + edgeIds.get(currentVertexName) + "- "); // Print the edge ID
+            stationCounter++;
+
+            if((!(tempEdge.equalsIgnoreCase(edgeIds.get(currentVertexName))))){
+                endStation = currentVertexName;
+                System.out.println(startStation+" - "+endStation+" ("+stationCounter+" stations)");
+                startStation = currentVertexName;
+                stationCounter =0;
+                if(edgeIds.get(currentVertexName) != null){
+                    System.out.println("Line "+edgeIds.get(currentVertexName)+":");
+                }
+                tempEdge = edgeIds.get(currentVertexName);
             }
+
             currentVertexName = previousVertices.get(currentVertexName) != null ?
-                                previousVertices.get(currentVertexName).getName() : null;
+                    previousVertices.get(currentVertexName).getName() : null;
+
         }
-        System.out.println("\n");
+        System.out.println("\n"+weight/60);
+        System.out.println("");
+
     }
     
     private Vertex getVertex(String vertexName) {
