@@ -13,7 +13,7 @@ public class DirectedGraph implements GraphInterface {
         this.vertices = new HashMap<>();
     }
 
-    public void addEdge(String source, String destination, int weight) {
+    public void addEdge(String source, String destination, int weight, String id) {
 
         Vertex source_v = vertices.get(source);
         Vertex destination_v = vertices.get(destination);
@@ -29,7 +29,7 @@ public class DirectedGraph implements GraphInterface {
                 vertices.put(destination, destination_v);
             }
 
-            Edge edge = new Edge(source_v, destination_v, weight);
+            Edge edge = new Edge(source_v, destination_v, weight, id);
             source_v.addEdge(edge);
         }
     }

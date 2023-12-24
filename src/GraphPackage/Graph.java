@@ -17,7 +17,7 @@ public class Graph implements GraphInterface{
         this.size = size;
     }
 
-    public void addEdge(String source, String destination, int weight) {
+    public void addEdge(String source, String destination, int weight, String id) {
         // Add source and destination into vertices if not exist
         if (!vertices.contains(source)) {
             vertices.add(source);

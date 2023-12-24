@@ -69,11 +69,7 @@ public class JourneyMain {
       // metroGraph.print();
 
         ShortestPathAlgorithm shortestPathAlgorithm = new ShortestPathAlgorithm(metroGraph);
-        Map<String, Integer> shortestPaths = shortestPathAlgorithm.findShortestPaths("Stalingrad");
-
-        for (Map.Entry<String, Integer> entry : shortestPaths.entrySet()) {
-            System.out.println("En kısa yol (" + entry.getKey() + "): " + entry.getValue());
-        }
+        shortestPathAlgorithm.findShortestPaths("Charles de Gaulle-Etoile","Odéon"); //finds and prints the shortest path
     }
     public void buildGraph() {
         for (Route route : routes) {
@@ -81,8 +77,9 @@ public class JourneyMain {
                 String sourceStation = route.getStations().get(i).getStopName();
                 String destinationStation = route.getStations().get(i + 1).getStopName();
                 int weight = Math.abs(route.getStations().get(i).getArrivalTime() - route.getStations().get(i+1).getArrivalTime());
+                String route_id = route.getRouteID();
 
-                metroGraph.addEdge(sourceStation, destinationStation, weight);
+                metroGraph.addEdge(sourceStation, destinationStation, weight, route_id);
             }
         }
     }

@@ -4,11 +4,13 @@ public class Edge {
     private Vertex source;
     private Vertex destination;
     private int weight;
+    private String id;
 
-    public Edge(Vertex source, Vertex destination, int weight) {
+    public Edge(Vertex source, Vertex destination, int weight, String id) {
         this.source = source;
         this.destination = destination;
         this.weight = weight;
+        this.id = id;
     }
 
     public Vertex getSource() {
@@ -33,6 +35,10 @@ public class Edge {
 
     public void setWeight(int weight) {
         this.weight = weight;
+    }
+
+    public String getID(){
+        return id;
     }
 
 }
