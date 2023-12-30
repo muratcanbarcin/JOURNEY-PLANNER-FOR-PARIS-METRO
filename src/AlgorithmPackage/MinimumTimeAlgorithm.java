@@ -5,13 +5,14 @@ import GraphPackage.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Stack;
 
 public class MinimumTimeAlgorithm {
 
     private DirectedGraph graph;
     private HashMap<String, Integer> shortestPaths = new HashMap<>();
     private HashMap<String, Vertex> previousVertices = new HashMap<>();
-    private HashMap<String, String> edgeIds = new HashMap<>(); // Map to store edge IDs in the shortest path
+    private HashMap<String, String> edgeIds = new HashMap<>();
     private PriorityQueue<VertexDistancePair> minHeap = new PriorityQueue<>();
 
     public MinimumTimeAlgorithm(DirectedGraph graph) {
@@ -41,10 +42,11 @@ public class MinimumTimeAlgorithm {
                         edgeIds.put(neighbor.getName(), edge.getID()); // Store the edge ID
                         shortestPaths.put(neighbor.getName(), newDistance);
                     }
-
                     if (neighbor.getName().equalsIgnoreCase(stopVertex)) {
                         // Reached the stopVertex, reconstruct and print the path
-                        printShortestPath(previousVertices, startVertex, stopVertex, newDistance, edgeIds);
+                        newDistance = currentPair.getDistance() + edge.getWeight();
+                        System.out.println(newDistance);
+                        printShortestPath(previousVertices,startVertex , stopVertex, newDistance, edgeIds);
                         return;
                     }
                 }
@@ -55,40 +57,47 @@ public class MinimumTimeAlgorithm {
         System.out.println("No path found from " + startVertex + " to " + stopVertex + "\n");
     }
 
-    // Method to print the shortest path and details
     private void printShortestPath(HashMap<String, Vertex> previousVertices, String startVertex, String stopVertex, int weight, Map<String, String> edgeIds) {
-        System.out.println("Origin Station: " + startVertex + "\nDestination:" + stopVertex + "\nPreferetion: Minimum Time\n\nSuggestion:");
         String currentVertexName = stopVertex;
-        System.out.println("Line "+edgeIds.get(currentVertexName)+":");
         String tempEdge = edgeIds.get(currentVertexName);
         String startStation = currentVertexName;
-        String endStation = " ";
-        int stationCounter =0;
-        while (currentVertexName != null) {
-            stationCounter++;
+        String endStation = "";
+        int stationCounter = 0;
+        Stack<String> pathStations = new Stack<>();
+        Stack<String> lines = new Stack<>();
 
-            if((!(tempEdge.equalsIgnoreCase(edgeIds.get(currentVertexName))))){
+        lines.push(edgeIds.get(currentVertexName));
+    
+        while (currentVertexName != null) {
+            if (!currentVertexName.equalsIgnoreCase(startStation))
+                stationCounter++;
+    
+            if (!(tempEdge.equalsIgnoreCase(edgeIds.get(currentVertexName)))) {
                 endStation = currentVertexName;
-                System.out.println(startStation+" - "+endStation+" ("+stationCounter+" stations)");
+                pathStations.push(endStation + " - " + startStation + " (" + stationCounter + " stations)");
                 startStation = currentVertexName;
-                stationCounter =0;
-                if(edgeIds.get(currentVertexName) != null){
-                    System.out.println("Line "+edgeIds.get(currentVertexName)+":");
+                stationCounter = 0;
+    
+                if (edgeIds.get(currentVertexName) != null) {
+                    lines.push(edgeIds.get(currentVertexName));
                 }
+    
                 tempEdge = edgeIds.get(currentVertexName);
             }
-
+    
             if (previousVertices.get(currentVertexName) != null) {
                 currentVertexName = previousVertices.get(currentVertexName).getName();
             } else {
                 currentVertexName = null;
             }
-
-
         }
-        System.out.println("\n"+weight/60 +" min");
-        System.out.println("");
+    
+        while (!pathStations.isEmpty()) {
+            System.out.println("\nLine "+lines.pop() + ":");
+            System.out.println(pathStations.pop());
+        }
 
+        System.out.println("\n" + weight / 60 + " min\n");
     }
 
     // Helper method to get a vertex by its name

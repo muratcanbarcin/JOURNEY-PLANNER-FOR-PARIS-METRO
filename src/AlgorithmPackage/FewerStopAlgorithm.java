@@ -49,51 +49,48 @@ public class FewerStopAlgorithm {
         printPath(start, end, parentMap);
     }
 
-    // Method to print the path with fewer stops
     private void printPath(Vertex start, Vertex end, Map<Vertex, Vertex> parentMap) {
         ArrayList<String> path = new ArrayList<>();
+        ArrayList<String> starts = new ArrayList<>();
+        ArrayList<String> ends = new ArrayList<>();
+        ArrayList<String> edgeID = new ArrayList<>();
         Vertex current = end;
+        String tempEdgeName = "";
 
         // Build the path in reverse order
         while (current != null) {
             path.add(current.getName());
             current = parentMap.get(current);
         }
-
-        // Print origin and destination information
-        System.out.println("Origin station: " + start.getName());
-        System.out.println("Destination station: " + end.getName());
-        System.out.println("Preference: Fewer Stops\n");
-
-        System.out.println("Suggestion:\n");
-        String tempEdgeName = getEdgeBetweenVertices(path.get(path.size() - 1), path.get(path.size() - 2)).getID();
-        String startStation = path.get(path.size() - 1);
-        String endStation = " ";
-        System.out.println("Line " + tempEdgeName + ":");
-        int stationCounter = 0;
-
-        // Iterate through the path to print stations and lines
-        for (int i = path.size() - 1; i > 0; i--) {
-            stationCounter++;
+        
+        path = getReverseList(path);
+                    
+        for (int i = 0; i < path.size() - 1; i++) {
             String currentVertexName = path.get(i);
-            String nextVertexName = path.get(i - 1);
-
+            String nextVertexName = path.get(i + 1);
+    
             Edge edge = getEdgeBetweenVertices(currentVertexName, nextVertexName);
 
-            // Check if the line changes or it's the end station
-            if (!edge.getID().equalsIgnoreCase(tempEdgeName) || nextVertexName.equalsIgnoreCase(end.getName())) {
-                endStation = nextVertexName;
-                System.out.println(startStation + " - " + endStation + " (" + stationCounter + " stations)");
-                startStation = nextVertexName;
+            if (!edge.getID().equalsIgnoreCase(tempEdgeName)) {
+                starts.add(currentVertexName);
+                ends.add(currentVertexName);
+                edgeID.add(edge.getID());
                 tempEdgeName = edge.getID();
-                stationCounter = 0;
-
-                // Print the new line if it exists and not the end station
-                if (edge != null && !nextVertexName.equalsIgnoreCase(end.getName())) {
-                    System.out.println("Line " + edge.getID() + ":");
-                }
             }
         }
+        
+        String endStation = path.get(path.size() - 1);
+
+        ends.add(endStation);
+        ends.remove(0);
+
+        for (int i = 0; i < starts.size(); i++){
+            System.out.println(String.format("\nLine %s:", edgeID.get(i)));
+            System.out.println(String.format("%s - %s (%d stations)", starts.get(i), ends.get(i), (path.indexOf(ends.get(i))-path.indexOf(starts.get(i)))));
+        }
+
+        
+        System.out.println("\n" + getTotalWeight(path)/60 + " min\n");
     }
 
     // Helper method to get a vertex by its name
@@ -120,5 +117,27 @@ public class FewerStopAlgorithm {
         }
 
         return null;
+    }
+
+    private ArrayList<String> getReverseList(ArrayList<String> ListToReverse){
+        ArrayList<String> ReversedList = new ArrayList<>();
+        ListIterator<String> listIterator = ListToReverse.listIterator(ListToReverse.size());
+        while(listIterator.hasPrevious()){
+           String element = listIterator.previous();
+           ReversedList.add(element);
+        }
+        return ReversedList;
+    }
+
+    private int getTotalWeight(ArrayList<String> list){
+        int total_weight = 0;
+        int weight;
+
+        for (int i = 0; i < list.size()-1; i++){
+            weight = getEdgeBetweenVertices(list.get(i), list.get(i+1)).getWeight();
+            total_weight+=weight;
+        }
+
+        return total_weight;
     }
 }

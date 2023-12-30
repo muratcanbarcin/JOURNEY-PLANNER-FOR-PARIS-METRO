@@ -2,9 +2,6 @@ package GraphPackage;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
 
 public class DirectedGraph implements GraphInterface {
     private HashMap<String, Vertex> vertices; //attribute

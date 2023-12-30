@@ -66,31 +66,7 @@ public class Vertex {
     public boolean isVisited() {
         return this.visited;
     }
-    /* No usage
-    public ArrayList<Vertex> getNeighbors() {
-        ArrayList<Vertex> neighbors = new ArrayList<>();
-        for (Edge edge : edges) {
-            neighbors.add(edge.getDestination());
-        }
-        return neighbors;
-    }
 
-    public Vertex getUnvisitedNeighbor() {
-        Vertex result = null;
-
-        Iterator<Vertex> neighbors = getNeighborIterator();
-        while (neighbors.hasNext() && (result == null))
-        {
-            Vertex nextNeighbor = neighbors.next();
-            if (!nextNeighbor.isVisited())
-                result = nextNeighbor;
-        } // end while
-
-        return result;
-    }
-
-
-     */
     public boolean hasEdge(String neighbor) { //If between of vertex and neighbor has edge return true, if has not edge return false
         boolean found = false; //flag
         Iterator<Vertex> neighbors = getNeighborIterator();
