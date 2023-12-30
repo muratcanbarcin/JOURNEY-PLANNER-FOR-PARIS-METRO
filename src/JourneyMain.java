@@ -71,6 +71,55 @@ public class JourneyMain {
 
        buildGraph(); //create a DirectedGraph
 
+        //test area
+
+        String testFile = "Test100.csv";
+        int testCounter = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(testFile))) {
+            String line2;
+
+            // Her satır için işlem yap
+            while ((line2 = br.readLine()) != null) {
+
+                if (testCounter == 0) {
+                    testCounter++;
+                    continue;
+                }
+
+                // CSV'den verileri çek
+                String[] parts = line2.split(",");
+
+                if (parts.length >= 3) {
+                     String originStation = parts[0];
+                     String destination = parts[1];
+                     String preferetion = parts[2];
+
+                    // Elde edilen verileri kullan
+                    System.out.println("\n\nTest:"+testCounter+"\n----------------------------------------");
+                    System.out.println("Origin Station: " + originStation);
+                    System.out.println("Destination: " + destination);
+                    System.out.println("Preference: " + preferetion);
+
+                    if(preferetion.equalsIgnoreCase("1")){
+                        FewerStopAlgorithm algorithm = new FewerStopAlgorithm(metroGraph);
+                        algorithm.findFewerStopsPath(originStation,destination);
+                    }
+                    else if(preferetion.equalsIgnoreCase("0")){
+                        MinimumTimeAlgorithm minimumTimeAlgorithm = new MinimumTimeAlgorithm(metroGraph);
+                        minimumTimeAlgorithm.findShortestPaths(originStation,destination); //finds and prints the shortest path
+                    }
+
+                    // Burada istediğiniz işlemleri gerçekleştirebilirsiniz.
+                    // Örneğin, originStation, destination ve preference değişkenlerini kullanarak bir şeyler yapabilirsiniz.
+                }
+                testCounter++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        /*
         //Simple UI
         Scanner scanner = new Scanner(System.in);
         System.out.print("Origin Station: ");
@@ -80,14 +129,9 @@ public class JourneyMain {
         System.out.print("Preferetion : ");
         String preferetion  = scanner.nextLine();
 
-        if(preferetion.equalsIgnoreCase("fewer stops")){
-            FewerStopAlgorithm algorithm = new FewerStopAlgorithm(metroGraph);
-            algorithm.findFewerStopsPath(originStation,destination);
-        }
-        else if(preferetion.equalsIgnoreCase("minimum time")){
-            MinimumTimeAlgorithm minimumTimeAlgorithm = new MinimumTimeAlgorithm(metroGraph);
-            minimumTimeAlgorithm.findShortestPaths(originStation,destination); //finds and prints the shortest path
-        }
+         */
+
+
 
 
 
