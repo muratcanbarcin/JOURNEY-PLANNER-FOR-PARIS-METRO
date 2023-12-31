@@ -61,6 +61,12 @@ public class DirectedGraph implements GraphInterface {
             v.setParent(null);
         }
     }
+
+    public void unvisit_all(){
+        for (Vertex v : vertices.values()) {
+            v.unvisit();
+        }
+    }
     /*No usage
     public Queue<String> getBreadthFirstTraversal(String origin)
     {

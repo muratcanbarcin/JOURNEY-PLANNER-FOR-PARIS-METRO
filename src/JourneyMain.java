@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import AlgorithmPackage.FewerStopAlgorithm;
 import AlgorithmPackage.MinimumTimeAlgorithm;
@@ -10,7 +9,7 @@ public class JourneyMain {
     //attributes
     private DirectedGraph metroGraph;
     private ArrayList<Route> routes;
-    public JourneyMain() { //constructor
+    public JourneyMain(){ //constructor
         this.routes = new ArrayList<>();
         this.metroGraph = new DirectedGraph();
 
@@ -82,7 +81,8 @@ public class JourneyMain {
             // Her satır için işlem yap
             while ((line2 = br.readLine()) != null) {
 
-                if (testCounter == 0) {
+
+                if (testCounter == 0){
                     testCounter++;
                     continue;
                 }
@@ -109,15 +109,18 @@ public class JourneyMain {
                         MinimumTimeAlgorithm minimumTimeAlgorithm = new MinimumTimeAlgorithm(metroGraph);
                         minimumTimeAlgorithm.findShortestPaths(originStation,destination); //finds and prints the shortest path
                     }
+                    metroGraph.unvisit_all();
 
                     // Burada istediğiniz işlemleri gerçekleştirebilirsiniz.
                     // Örneğin, originStation, destination ve preference değişkenlerini kullanarak bir şeyler yapabilirsiniz.
                 }
                 testCounter++;
             }
+            br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+            
 
         /*
         //Simple UI
@@ -130,10 +133,6 @@ public class JourneyMain {
         String preferetion  = scanner.nextLine();
 
          */
-
-
-
-
 
 
     }
