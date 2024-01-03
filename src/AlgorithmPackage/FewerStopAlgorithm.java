@@ -6,8 +6,11 @@ import GraphPackage.*;
 public class FewerStopAlgorithm {
     private DirectedGraph graph;
 
+    private long time;
+
     public FewerStopAlgorithm(DirectedGraph graph) {
         this.graph = graph;
+        time = 0;
     }
 
     // Queue for BFS traversal
@@ -17,7 +20,8 @@ public class FewerStopAlgorithm {
     private HashMap<Vertex, Vertex> parentMap = new HashMap<>();
 
     // Method to find the path with fewer stops using BFS
-    public void findFewerStopsPath(String startVertex, String endVertex) {
+    public void findFewerStopsPath(String startVertex, String endVertex,boolean test) {
+        long start_time = System.nanoTime();
         Vertex start = getVertex(startVertex);
         Vertex end = getVertex(endVertex);
 
@@ -46,7 +50,12 @@ public class FewerStopAlgorithm {
         }
 
         // Print the path with fewer stops
-        printPath(start, end, parentMap);
+        if (test){
+            time = System.nanoTime()-start_time;
+            System.out.println(startVertex + " - " + endVertex + " time: " + time);
+        }
+        else
+            printPath(start, end, parentMap);
     }
 
     private void printPath(Vertex start, Vertex end, Map<Vertex, Vertex> parentMap) {
@@ -85,11 +94,17 @@ public class FewerStopAlgorithm {
         ends.remove(0);
 
         for (int i = 0; i < starts.size(); i++){
-            System.out.println(String.format("\nLine %s:", edgeID.get(i)));
-            System.out.println(String.format("%s - %s (%d stations)", starts.get(i), ends.get(i), (path.indexOf(ends.get(i))-path.indexOf(starts.get(i)))));
+            if (edgeID.get(i).equalsIgnoreCase("walk")){
+                System.out.println("\nWalk :");
+                System.out.println(String.format("%s - %s", starts.get(i), ends.get(i)));
+            }
+                
+            else{
+                 System.out.println(String.format("\nLine %s:", edgeID.get(i)));
+                 System.out.println(String.format("%s - %s (%d stations)", starts.get(i), ends.get(i), (path.indexOf(ends.get(i))-path.indexOf(starts.get(i)))));
+            }
         }
 
-        
         System.out.println("\n" + getTotalWeight(path)/60 + " min\n");
     }
 
@@ -139,5 +154,9 @@ public class FewerStopAlgorithm {
         }
 
         return total_weight;
+    }
+
+    public long getTime(){
+        return time;
     }
 }

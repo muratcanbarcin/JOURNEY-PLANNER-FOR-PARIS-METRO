@@ -10,17 +10,24 @@ import java.util.Stack;
 public class MinimumTimeAlgorithm {
 
     private DirectedGraph graph;
-    private HashMap<String, Integer> shortestPaths = new HashMap<>();
-    private HashMap<String, Vertex> previousVertices = new HashMap<>();
-    private HashMap<String, String> edgeIds = new HashMap<>();
-    private PriorityQueue<VertexDistancePair> minHeap = new PriorityQueue<>();
+    private HashMap<String, Integer> shortestPaths;
+    private HashMap<String, Vertex> previousVertices;
+    private HashMap<String, String> edgeIds;
+    private PriorityQueue<VertexDistancePair> minHeap;
+    private long time;
 
     public MinimumTimeAlgorithm(DirectedGraph graph) {
         this.graph = graph;
+        minHeap = new PriorityQueue<>();
+        edgeIds = new HashMap<>();
+        previousVertices = new HashMap<>();
+        shortestPaths = new HashMap<>();
+        time = 0;
     }
 
     // Method to find the shortest paths using Dijkstra's algorithm
-    public void findShortestPaths(String startVertex, String stopVertex) {
+    public void findShortestPaths(String startVertex, String stopVertex, boolean test) {
+        long start_time = System.nanoTime();
 
         minHeap.add(new VertexDistancePair(getVertex(startVertex), 0));
 
@@ -45,8 +52,12 @@ public class MinimumTimeAlgorithm {
                     if (neighbor.getName().equalsIgnoreCase(stopVertex)) {
                         // Reached the stopVertex, reconstruct and print the path
                         newDistance = currentPair.getDistance() + edge.getWeight();
-                        System.out.println(newDistance);
-                        printShortestPath(previousVertices,startVertex , stopVertex, newDistance, edgeIds);
+                        if (!test)
+                            printShortestPath(previousVertices,startVertex , stopVertex, newDistance, edgeIds);
+                        else{
+                            time = System.nanoTime()-start_time;
+                            System.out.println(startVertex + " - " + stopVertex + " time: " + time);
+                        }
                         return;
                     }
                 }
@@ -93,8 +104,17 @@ public class MinimumTimeAlgorithm {
         }
     
         while (!pathStations.isEmpty()) {
-            System.out.println("\nLine "+lines.pop() + ":");
-            System.out.println(pathStations.pop());
+            if (lines.peek().equalsIgnoreCase("walk")){
+                System.out.println("\nWalk :");
+                lines.pop();
+                String walk_stations = pathStations.pop();
+                walk_stations = walk_stations.substring(0,walk_stations.indexOf("("));
+                System.out.println(walk_stations);
+            }
+            else{
+                System.out.println("\nLine "+lines.pop() + ":");
+                System.out.println(pathStations.pop());
+            }
         }
 
         System.out.println("\n" + weight / 60 + " min\n");
@@ -108,6 +128,10 @@ public class MinimumTimeAlgorithm {
             }
         }
         return null;
+    }
+
+    public long getTime(){
+        return time;
     }
 
     // Private class to represent a pair of vertex and its distance
