@@ -128,10 +128,10 @@ public class JourneyMain {
         if (preference.equals("0") || preference.equals("1")) {
             if (preference.equals("1")) {
                 MinimumTimeAlgorithm minimumTimeAlgorithm = new MinimumTimeAlgorithm(metroGraph);
-                minimumTimeAlgorithm.findShortestPaths(originStation, destination, false);
+                minimumTimeAlgorithm.findShortestPaths(originStation, destination);
             } else {
                 FewerStopAlgorithm algorithm = new FewerStopAlgorithm(metroGraph);
-                algorithm.findFewerStopsPath(originStation, destination, false);
+                algorithm.findFewerStopsPath(originStation, destination);
             }
         } else {
             System.out.println("Invalid preference. Please enter 0 or 1.");
@@ -161,24 +161,28 @@ public class JourneyMain {
                     String destination = parts[1];
                     String preference = parts[2];
 
-                    System.out.println("\n\nTest: " + testCounter + " Choice: " + preference + "\n----------------------------------------");
+                    System.out.println("\n\nTest: " + testCounter + "  " + originStation + " - " + destination + "  Choice: " + preference + "\n----------------------------------------");
 
                     if (preference.equals("0")) {
                         FewerStopAlgorithm algorithm = new FewerStopAlgorithm(metroGraph);
-                        algorithm.findFewerStopsPath(originStation, destination, true);
+                        algorithm.findFewerStopsPath(originStation, destination);
                         totalTime += algorithm.getTime();
+                        System.out.println("Search time: " + algorithm.getTime());
+        
                     } else if (preference.equals("1")) {
                         MinimumTimeAlgorithm minimumTimeAlgorithm = new MinimumTimeAlgorithm(metroGraph);
-                        minimumTimeAlgorithm.findShortestPaths(originStation, destination, true);
+                        minimumTimeAlgorithm.findShortestPaths(originStation, destination);
                         totalTime += minimumTimeAlgorithm.getTime();
+                        System.out.println("Search time: " + minimumTimeAlgorithm.getTime());
                     }
+                    
 
                     metroGraph.unvisit_all();
                     testCounter++;
                 }
             }
             br.close();
-            System.out.println("\nAverage Time: " + (totalTime / testCounter));
+            System.out.println("\nAverage Time: " + (totalTime / testCounter) + "ns");
         } catch (IOException e) {
             e.printStackTrace();
         }

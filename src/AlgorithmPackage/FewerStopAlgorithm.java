@@ -20,7 +20,7 @@ public class FewerStopAlgorithm {
     private HashMap<Vertex, Vertex> parentMap = new HashMap<>();
 
     // Method to find the path with fewer stops using BFS
-    public void findFewerStopsPath(String startVertex, String endVertex,boolean test) {
+    public void findFewerStopsPath(String startVertex, String endVertex) {
         long start_time = System.nanoTime();
         Vertex start = getVertex(startVertex);
         Vertex end = getVertex(endVertex);
@@ -48,14 +48,9 @@ public class FewerStopAlgorithm {
                 }
             }
         }
-
+        time = System.nanoTime()-start_time;
         // Print the path with fewer stops
-        if (test){
-            time = System.nanoTime()-start_time;
-            System.out.println(startVertex + " - " + endVertex + " time: " + time);
-        }
-        else
-            printPath(start, end, parentMap);
+        printPath(start, end, parentMap);
     }
 
     private void printPath(Vertex start, Vertex end, Map<Vertex, Vertex> parentMap) {

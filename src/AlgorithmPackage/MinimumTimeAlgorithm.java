@@ -26,7 +26,7 @@ public class MinimumTimeAlgorithm {
     }
 
     // Method to find the shortest paths using Dijkstra's algorithm
-    public void findShortestPaths(String startVertex, String stopVertex, boolean test) {
+    public void findShortestPaths(String startVertex, String stopVertex) {
         long start_time = System.nanoTime();
 
         minHeap.add(new VertexDistancePair(getVertex(startVertex), 0));
@@ -52,12 +52,8 @@ public class MinimumTimeAlgorithm {
                     if (neighbor.getName().equalsIgnoreCase(stopVertex)) {
                         // Reached the stopVertex, reconstruct and print the path
                         newDistance = currentPair.getDistance() + edge.getWeight();
-                        if (!test)
-                            printShortestPath(previousVertices,startVertex , stopVertex, newDistance, edgeIds);
-                        else{
-                            time = System.nanoTime()-start_time;
-                            System.out.println(startVertex + " - " + stopVertex + " time: " + time);
-                        }
+                        time = System.nanoTime()-start_time;
+                        printShortestPath(previousVertices,startVertex , stopVertex, newDistance, edgeIds);
                         return;
                     }
                 }
