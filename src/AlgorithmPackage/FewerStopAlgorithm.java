@@ -4,11 +4,11 @@ import java.util.*;
 import GraphPackage.*;
 
 public class FewerStopAlgorithm {
+    //attributes
     private DirectedGraph graph;
-
     private long time;
 
-    public FewerStopAlgorithm(DirectedGraph graph) {
+    public FewerStopAlgorithm(DirectedGraph graph) { //constructor
         this.graph = graph;
         time = 0;
     }

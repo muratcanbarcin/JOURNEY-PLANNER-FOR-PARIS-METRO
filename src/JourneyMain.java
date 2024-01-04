@@ -10,7 +10,7 @@ public class JourneyMain {
     //attributes
     private static DirectedGraph metroGraph;
     private ArrayList<Route> routes;
-    public JourneyMain() throws IOException{ //constructor
+    public JourneyMain() { //constructor
         this.routes = new ArrayList<>();
         this.metroGraph = new DirectedGraph();
 
@@ -19,18 +19,18 @@ public class JourneyMain {
         String walk_edge_file = "walk_edges.txt";
         String line;
         String cvsSplitBy = ",";
-        int countRoute =-2;
-        int countStation =-2;
+        int countRoute = -2;
+        int countStation = -2;
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-
-            while ((line = br.readLine()) != null) { //Loop skipping first line
+            while ((line = br.readLine()) != null) { //Loop skipping the first line
                 if (countStation == -2) {
-                    countStation+=1;
-                    countRoute+=1;
+                    countStation += 1;
+                    countRoute += 1;
                     continue;
                 }
-                //Separate each line in CSV file with comma
+
+                //Separate each line in the CSV file with a comma
                 String[] data = line.split(cvsSplitBy);
 
                 //Assign data to the correct variables
@@ -43,35 +43,39 @@ public class JourneyMain {
                 String routeLong = data[6];
                 int routeType = Integer.parseInt(data[7]);
 
-                //Has been route added to routes arraylist control
+                //Has been route added to routes ArrayList control
                 boolean new_route = true;
-                for(Route route : routes){
-                    if(routeLong.equalsIgnoreCase(route.getRouteName())){
+                for (Route route : routes) {
+                    if (routeLong.equalsIgnoreCase(route.getRouteName())) {
                         new_route = false;
                     }
                 }
-                //Route add to routes arraylist if has not been ever
-                if(new_route){
-                    Route routeNew = new Route(directionID,routeShort,routeLong,routeType);
+
+                //Route add to routes ArrayList if it has not been added ever
+                if (new_route) {
+                    Route routeNew = new Route(directionID, routeShort, routeLong, routeType);
                     routeNew.setStations(new ArrayList<>());
                     routes.add(routeNew);
-                    countRoute+=1;
+                    countRoute += 1;
                 }
-                //Station add to stations arraylist
-                Route tempRoute = routes.get(countRoute);
-                Route.Station s = tempRoute.new Station(arrivalTime,stopID,stopName,stopSequence);
-                tempRoute.addStation(s);
-                countStation+=1;
 
+                //Station add to stations ArrayList
+                Route tempRoute = routes.get(countRoute);
+                Route.Station s = tempRoute.new Station(arrivalTime, stopID, stopName, stopSequence);
+                tempRoute.addStation(s);
+                countStation += 1;
             }
-        } catch (IOException e) {
+        } catch (IOException | NumberFormatException e) {
             e.printStackTrace();
         }
 
         buildGraph(); //create a DirectedGraph
-        addWalkEdges(walk_edge_file); //add walk edges
+        try {
+            addWalkEdges(walk_edge_file); //add walk edges
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         menu();
-
     }
 
     public void menu(){
@@ -109,7 +113,7 @@ public class JourneyMain {
         System.out.println("------------------------------------------------------");
         System.out.println("1. Plan Your Journey");
         System.out.println("2. Test File");
-        System.out.println("3. Stop Search (Under Maintenance)");
+        System.out.println("3. Stop Search");
         System.out.println("4. Exit");
     }
 
@@ -180,10 +184,23 @@ public class JourneyMain {
         }
     }
 
-    private static void stopSearch() {
-        System.out.println("Stop Search is currently under maintenance.");
-        // Implement stop search functionality here if it becomes available
+    private void stopSearch() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the station name to search: ");
+        String stationName = scanner.nextLine();
+
+        System.out.println("Lines Passing through the '" + stationName + "' Station:");
+        System.out.println("------------------------------------------------------");
+        for (Route route : routes) {
+            for (Route.Station station : route.getStations()) {
+                if (station.getStopName().equalsIgnoreCase(stationName)) {
+                    System.out.println("Line: "+ route.getRouteName());
+                    break; // Break the inner loop as we found the station in this route
+                }
+            }
+        }
     }
+
 
     public int buildGraph() {
         int edge_counter = 0;
@@ -202,15 +219,18 @@ public class JourneyMain {
         return edge_counter;
     }
 
-    public void addWalkEdges(String edge_file) throws IOException{
-        BufferedReader br = new BufferedReader(new FileReader(edge_file));
-        String edge;
-        
-        while ((edge = br.readLine()) != null) {
-            String[] edge_arr = edge.split(",");
-            String sourceStation = edge_arr[0];
-            String destinationStation = edge_arr[1];
-            metroGraph.addEdge(sourceStation, destinationStation, 300, "walk");
+    public void addWalkEdges(String edge_file) throws IOException {
+        try (BufferedReader br = new BufferedReader(new FileReader(edge_file))) {
+            String edge;
+
+            while ((edge = br.readLine()) != null) {
+                String[] edge_arr = edge.split(",");
+                String sourceStation = edge_arr[0];
+                String destinationStation = edge_arr[1];
+                metroGraph.addEdge(sourceStation, destinationStation, 300, "walk");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
